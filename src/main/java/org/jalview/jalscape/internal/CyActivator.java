@@ -47,15 +47,11 @@ public class CyActivator extends AbstractCyActivator {
 			// Issue error and return
 		}
 
-		System.out.println("Creating manager");
-
 		// Create the context object
 		JalScapeManager jalscapeManager = new JalScapeManager(bc, haveGUI);
 
 		// Get a handle on the CyServiceRegistrar
 		CyServiceRegistrar registrar = getService(bc, CyServiceRegistrar.class);
-
-		System.out.println("Creating task factory");
 
 		// Menu task factories
 		TaskFactory createAlignment = new CreateAlignmentTaskFactory(jalscapeManager);
@@ -68,7 +64,6 @@ public class CyActivator extends AbstractCyActivator {
 		createAlignmentProps.setProperty(IN_MENU_BAR, "true");
 		createAlignmentProps.setProperty(MENU_GRAVITY, "1.0");
 
-		System.out.println("Registering task factory");
 		registerService(bc, createAlignment, NetworkTaskFactory.class, createAlignmentProps);
 	}
 
