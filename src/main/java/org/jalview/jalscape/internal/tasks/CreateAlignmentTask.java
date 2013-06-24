@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.cytoscape.model.CyIdentifiable;
-import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 
@@ -14,15 +14,15 @@ import org.jalview.jalscape.internal.model.JalScapeManager;
 
 public class CreateAlignmentTask extends AbstractTask {
 	// private List<CyNode> nodeList;
-	private CyNetworkView netView;
+	private CyNetwork net;
 	private JalScapeManager jalscapeManager;
 	private Map<CyIdentifiable, String> mapSequences;
 
-	public CreateAlignmentTask(List<CyIdentifiable> nodeList, CyNetworkView netView, JalScapeManager jalscapeManager) {
+	public CreateAlignmentTask(List<CyIdentifiable> nodeList, CyNetwork net, JalScapeManager jalscapeManager) {
 		// this.nodeList = nodeList;
-		this.netView = netView;
+		this.net = net;
 		this.jalscapeManager = jalscapeManager;
-		mapSequences = jalscapeManager.getSequences(netView.getModel(), nodeList);
+		mapSequences = jalscapeManager.getSequences(net, nodeList);
 	}
 
 	public void run(TaskMonitor taskMonitor) {

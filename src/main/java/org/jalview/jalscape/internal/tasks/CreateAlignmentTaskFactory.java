@@ -9,17 +9,14 @@ import org.cytoscape.model.CyIdentifiable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableUtil;
-import org.cytoscape.task.NetworkViewTaskFactory;
-import org.cytoscape.task.NodeViewTaskFactory;
-import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.View;
+import org.cytoscape.task.NetworkTaskFactory;
 import org.cytoscape.work.AbstractTaskFactory;
 import org.cytoscape.work.TaskIterator;
 
 import org.jalview.jalscape.internal.model.JalScapeManager;
 
 public class CreateAlignmentTaskFactory extends AbstractTaskFactory implements
-		NetworkViewTaskFactory {
+		NetworkTaskFactory {
 
 	private JalScapeManager jalscapeManager;
 
@@ -31,7 +28,7 @@ public class CreateAlignmentTaskFactory extends AbstractTaskFactory implements
 		return null;
 	}
 
-	public boolean isReady(CyNetworkView netView) {
+	public boolean isReady(CyNetwork net) {
 		// Get all of the selected nodes/edges
 
 		/*
@@ -48,10 +45,10 @@ public class CreateAlignmentTaskFactory extends AbstractTaskFactory implements
 		return true;
 	}
 
-	public TaskIterator createTaskIterator(CyNetworkView netView) {
+	public TaskIterator createTaskIterator(CyNetwork net) {
 		// Get all of the selected nodes
 		List<CyIdentifiable> selectedList = new ArrayList<CyIdentifiable>();
-		selectedList.addAll(CyTableUtil.getNodesInState(netView.getModel(), CyNetwork.SELECTED, true));
-		return new TaskIterator(new CreateAlignmentTask(selectedList, netView, jalscapeManager));
+		selectedList.addAll(CyTableUtil.getNodesInState(net, CyNetwork.SELECTED, true));
+		return new TaskIterator(new CreateAlignmentTask(selectedList, net, jalscapeManager));
 	}
 }

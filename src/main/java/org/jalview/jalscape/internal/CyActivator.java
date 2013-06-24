@@ -69,8 +69,7 @@ public class CyActivator extends AbstractCyActivator {
 		createAlignmentProps.setProperty(MENU_GRAVITY, "1.0");
 
 		System.out.println("Registering task factory");
-		// registerService(bc, createAlignment, NetworkViewTaskFactory.class, createAlignmentProps);
-		registerService(bc, createAlignment, TaskFactory.class, createAlignmentProps);
+		registerService(bc, createAlignment, NetworkTaskFactory.class, createAlignmentProps);
 	}
 
 }
