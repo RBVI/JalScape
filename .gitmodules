@@ -1,3 +1,3 @@
 [submodule "jalview"]
 	path = jalview
-	url = https://source.jalview.org/git/jalview.git
+	url = http://source.jalview.org/git/jalview.git
