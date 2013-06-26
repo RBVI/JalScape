@@ -20,6 +20,10 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableUtil;
 
+import jalview.datamodel.AlignmentI;
+import jalview.datamodel.SequenceI;
+import jalview.datamodel.Sequence;
+
 /**
  * This object maintains the relationship between JalView objects and Cytoscape objects.
  */
@@ -28,7 +32,7 @@ public class JalScapeManager {
 	static final String[] defaultSequenceKeys = { "Sequence", "sequence" };
 	private final BundleContext bundleContext;
 	private final boolean haveGUI;
-
+	java.util.Map<CyIdentifiable, SequenceI> seqs = new java.util.IdentityHashMap<CyIdentifiable, SequenceI>();
 	public JalScapeManager(BundleContext bc, boolean haveGUI) {
 		this.bundleContext = bc;
 		this.haveGUI = haveGUI;
@@ -52,8 +56,13 @@ public class JalScapeManager {
 
 	public void launchJalViewDialog(Map<CyIdentifiable, String> mapSequences) {
 		System.out.println("Launching jalview with: ");
+		AlignmentI al;
+		SequenceI[] sq = new SequenceI[mapSequences.size()];
+		int i=0;
 		for (CyIdentifiable key: mapSequences.keySet()) {
 			System.out.println(key.getSUID()+": "+mapSequences.get(key));
+			sq[i++] = new jalview.datamodel.Sequence(""+key.getSUID(),mapSequences.get(key));
+			seqs.put(key, sq[i-1]); 
 		}
 	}
 
