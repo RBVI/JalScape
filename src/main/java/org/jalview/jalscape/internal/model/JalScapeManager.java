@@ -64,6 +64,21 @@ public class JalScapeManager {
 			sq[i++] = new jalview.datamodel.Sequence(""+key.getSUID(),mapSequences.get(key));
 			seqs.put(key, sq[i-1]); 
 		}
+		al = new jalview.datamodel.Alignment(sq);
+		try {
+		  jalview.bin.Jalview.main(new String[] {});
+		  while (jalview.gui.Desktop.instance==null || !jalview.gui.Desktop.instance.isVisible())
+		  {
+		    try {
+		      Thread.sleep(500);
+		    } catch (InterruptedException q) {};
+		  }
+		  jalview.gui.AlignFrame af = new jalview.gui.AlignFrame(al, 600, 400);
+		  jalview.gui.Desktop.addInternalFrame(af, "From Cytoscape",600,400);
+		  
+		  
+//		    jalview.bin.Jalview.main(new String[] {});
+		} catch (Exception x) { x.printStackTrace();};
 	}
 
 	private List<String> getCurrentSequenceKeys(CyNetwork network) {
