@@ -18,43 +18,32 @@
 	<version>0.9.0</version>
 
 	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<version>${maven-bundle-plugin.version}</version>
-				<extensions>true</extensions>
-				<configuration>
-					<instructions>
-						<Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
-						<Bundle-Version>${project.version}</Bundle-Version>
+
+	<plugins>
+		<plugin>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>maven-bundle-plugin</artifactId>
+			<version>${maven-bundle-plugin.version}</version>
+			<extensions>true</extensions>
+			<configuration>
+				<instructions>
+					<Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
+					<Bundle-Version>${project.version}</Bundle-Version>
 						<Export-Package>!${bundle.namespace}.*</Export-Package>
 						<Private-Package>${bundle.namespace}.*</Private-Package>
-						<Bundle-Activator>${bundle.namespace}.CyActivator</Bundle-Activator>
-					</instructions>
-				</configuration>
-			</plugin>
-			<!-- plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<version>1.4</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>shade</goal>
-						</goals>
-						<configuration>
-							<artifactSet>
-								<includes>
-									<include>org.openscience.cdk:*</include>
-								</includes>
-							</artifactSet>
-							<minimizeJar>true</minimizeJar>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin -->
+					<Bundle-Activator>${bundle.namespace}.CyActivator</Bundle-Activator>
+					<Embed-Dependency>jalview,jvlib.*;scope=compile|runtime;inline-false</Embed-Dependency> 
+				</instructions>
+			</configuration>
+		</plugin>
+		<plugin><groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestFile>${basedir}/jalscape-full-jars.mf</manifestFile>
+          </archive>
+        </configuration>
+      </plugin>
 		</plugins>
 	</build>
 
@@ -88,6 +77,12 @@
 			<releases>
 				<enabled>true</enabled>
 			</releases>
+		</repository>
+		<repository>
+		 <id>local-jalview</id>
+		 <url>file:${project.basedir}/repo</url>
+		 <releases>
+		 <enabled>true</enabled></releases>
 		</repository>
 	</repositories>
 
@@ -128,6 +123,162 @@
 			<artifactId>org.osgi.core</artifactId>
 			<version>${osgi.api.version}</version>
 		</dependency>
+  <dependency>
+      <groupId>org.jalview</groupId>
+      <artifactId>jalview</artifactId>
+      <version>0</version>
+  </dependency> 
+<dependency>
+      <groupId>org.jalview</groupId>
+      <artifactId>jvlib.1</artifactId>
+      <version>0</version> 
+    </dependency> 
+<dependency>
+      <groupId>org.jalview</groupId>
+      <artifactId>jvlib.10</artifactId>
+      <version>0</version> 
+    </dependency> 
+<dependency>
+      <groupId>org.jalview</groupId>
+      <artifactId>jvlib.11</artifactId>
+      <version>0</version> 
+    </dependency> 
+<dependency>
+      <groupId>org.jalview</groupId>
+      <artifactId>jvlib.12</artifactId>
+      <version>0</version> 
+    </dependency> 
+<dependency>
+      <groupId>org.jalview</groupId>
+      <artifactId>jvlib.13</artifactId>
+      <version>0</version> 
+    </dependency> 
+<dependency>
+      <groupId>org.jalview</groupId>
+      <artifactId>jvlib.14</artifactId>
+      <version>0</version> 
+    </dependency> 
+<dependency>
+      <groupId>org.jalview</groupId>
+      <artifactId>jvlib.15</artifactId>
+      <version>0</version> 
+    </dependency> 
+<dependency>
+      <groupId>org.jalview</groupId>
+      <artifactId>jvlib.16</artifactId>
+      <version>0</version> 
+    </dependency> 
+<dependency>
+      <groupId>org.jalview</groupId>
+      <artifactId>jvlib.17</artifactId>
+      <version>0</version> 
+    </dependency> 
+<dependency>
+      <groupId>org.jalview</groupId>
+      <artifactId>jvlib.18</artifactId>
+      <version>0</version> 
+    </dependency> 
+<dependency>
+      <groupId>org.jalview</groupId>
+      <artifactId>jvlib.19</artifactId>
+      <version>0</version> 
+    </dependency> 
+<dependency>
+      <groupId>org.jalview</groupId>
+      <artifactId>jvlib.2</artifactId>
+      <version>0</version> 
+    </dependency> 
+<dependency>
+      <groupId>org.jalview</groupId>
+      <artifactId>jvlib.20</artifactId>
+      <version>0</version> 
+    </dependency> 
+<dependency>
+      <groupId>org.jalview</groupId>
+      <artifactId>jvlib.21</artifactId>
+      <version>0</version> 
+    </dependency> 
+<dependency>
+      <groupId>org.jalview</groupId>
+      <artifactId>jvlib.22</artifactId>
+      <version>0</version> 
+    </dependency> 
+<dependency>
+      <groupId>org.jalview</groupId>
+      <artifactId>jvlib.23</artifactId>
+      <version>0</version> 
+    </dependency> 
+<dependency>
+      <groupId>org.jalview</groupId>
+      <artifactId>jvlib.24</artifactId>
+      <version>0</version> 
+    </dependency> 
+<dependency>
+      <groupId>org.jalview</groupId>
+      <artifactId>jvlib.25</artifactId>
+      <version>0</version> 
+    </dependency> 
+<dependency>
+      <groupId>org.jalview</groupId>
+      <artifactId>jvlib.26</artifactId>
+      <version>0</version> 
+    </dependency> 
+<dependency>
+      <groupId>org.jalview</groupId>
+      <artifactId>jvlib.27</artifactId>
+      <version>0</version> 
+    </dependency> 
+<dependency>
+      <groupId>org.jalview</groupId>
+      <artifactId>jvlib.28</artifactId>
+      <version>0</version> 
+    </dependency> 
+<dependency>
+      <groupId>org.jalview</groupId>
+      <artifactId>jvlib.29</artifactId>
+      <version>0</version> 
+    </dependency> 
+<dependency>
+      <groupId>org.jalview</groupId>
+      <artifactId>jvlib.3</artifactId>
+      <version>0</version> 
+    </dependency> 
+<dependency>
+      <groupId>org.jalview</groupId>
+      <artifactId>jvlib.30</artifactId>
+      <version>0</version> 
+    </dependency> 
+<dependency>
+      <groupId>org.jalview</groupId>
+      <artifactId>jvlib.4</artifactId>
+      <version>0</version> 
+    </dependency> 
+<dependency>
+      <groupId>org.jalview</groupId>
+      <artifactId>jvlib.5</artifactId>
+      <version>0</version> 
+    </dependency> 
+<dependency>
+      <groupId>org.jalview</groupId>
+      <artifactId>jvlib.6
+</artifactId>
+      <version>0</version> 
+    </dependency> <dependency>
+      <groupId>org.jalview</groupId>
+      <artifactId>jvlib.7
+</artifactId>
+      <version>0</version> 
+    </dependency> <dependency>
+      <groupId>org.jalview</groupId>
+      <artifactId>jvlib.8
+</artifactId>
+      <version>0</version> 
+    </dependency> <dependency>
+      <groupId>org.jalview</groupId>
+      <artifactId>jvlib.9
+      </artifactId>
+      <version>0</version> 
+    </dependency> 
 	</dependencies>
 
 </project>
