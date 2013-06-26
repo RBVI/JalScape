@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Bundle-ClassPath: .,jalview-0.jar,jvlib.19-0.jar,jvlib.25-0.jar,jvlib.
+ 23-0.jar,jvlib.12-0.jar,jvlib.17-0.jar,jvlib.27-0.jar,jvlib.15-0.jar,
+ jvlib.20-0.jar,jvlib.18-0.jar,jvlib.6-0.jar,jvlib.21-0.jar,jvlib.10-0
+ .jar,jvlib.13-0.jar,jvlib.5-0.jar,jvlib.26-0.jar,jvlib.8-0.jar,jvlib.
+ 30-0.jar,jvlib.14-0.jar,jvlib.28-0.jar,jvlib.24-0.jar,jvlib.22-0.jar,
+ jvlib.11-0.jar,jvlib.4-0.jar,jvlib.9-0.jar,jvlib.7-0.jar,jvlib.3-0.ja
+ r,jvlib.2-0.jar,jvlib.16-0.jar,jvlib.1-0.jar,jvlib.29-0.jar
+Built-By: jimp
+Tool: Bnd-1.15.0
+Bundle-Name: JalScape
+Created-By: Apache Maven Bundle Plugin
+Build-Jdk: 1.6.0_51
+Bundle-Version: 0.9.0
+Bnd-LastModified: 1372252384176
+Bundle-ManifestVersion: 2
+Bundle-Activator: org.jalview.jalscape.internal.CyActivator
+Embed-Dependency: jalview,jvlib.*;scope=compile|runtime;inline-false
+Bundle-SymbolicName: JalScape
+Import-Package: javax.xml.namespace,javax.xml.ws,javax.xml,javax.swing.plaf.basic,javax.net.ssl,javax.swing,javax.swing.event,javax.swing.filechooser,javax.swing.border,javax.swing.text,javax.swing.text.html,javax.swing.plaf,org.cytoscape.application.swing;version="[ 3.1,4)",org
+ .cytoscape.model;version="[3.1,4)",org.cytoscape.service.util;version
+ ="[3.1,4)",org.cytoscape.task;version="[3.1,4)",org.cytoscape.work;ve
+ rsion="[3.1,4)",org.osgi.framework;version="[1.5,2)",org.slf4j;versio
+ n="[1.5,2)"
+
