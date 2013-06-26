@@ -65,6 +65,7 @@ public class CyActivator extends AbstractCyActivator {
 		createAlignmentProps.setProperty(MENU_GRAVITY, "1.0");
 
 		registerService(bc, createAlignment, NetworkTaskFactory.class, createAlignmentProps);
+		jalview.bin.Cache.initLogger();
 	}
 
 }
