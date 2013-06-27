@@ -27,13 +27,14 @@ public class JalScapeManager {
 	static final String[] defaultSequenceKeys = { "Sequence", "sequence" };
 	private final BundleContext bundleContext;
 	private final boolean haveGUI;
-	private Map<CyIdentifiable, SequenceI> seqs = new java.util.IdentityHashMap<CyIdentifiable, SequenceI>();
 	private Map<CyNetwork,Map<CyIdentifiable, SequenceI>> netMap;
+	private Map<CyNetwork,Map<String, CyIdentifiable>> nameMap;
 
 	public JalScapeManager(BundleContext bc, boolean haveGUI) {
 		this.bundleContext = bc;
 		this.haveGUI = haveGUI;
 		netMap = new HashMap<CyNetwork,Map<CyIdentifiable, SequenceI>>();
+		nameMap = new HashMap<CyNetwork,Map<String, CyIdentifiable>>();
 	}
 
 	public Map<CyIdentifiable, String> getSequences(CyNetwork network, List<CyIdentifiable> nodeList) {
@@ -53,17 +54,25 @@ public class JalScapeManager {
 	}
 
 	public void launchJalViewDialog(CyNetwork network, Map<CyIdentifiable, String> mapSequences) {
-		if (!netMap.containsKey(network))
-			netMap.put(network, new IdentityHashMap<CyIdentifiable, SequenceI>());
+		CyTable nodeTable = network.getDefaultNodeTable();
 
-		Map<CyIdentifiable, SequenceI> seq = netMap.get(network);
+		if (!netMap.containsKey(network)) {
+			netMap.put(network, new IdentityHashMap<CyIdentifiable, SequenceI>());
+			nameMap.put(network, new IdentityHashMap<String, CyIdentifiable>());
+		}
+
+		Map<CyIdentifiable, SequenceI> seqs = netMap.get(network);
+		Map<String, CyIdentifiable> names = nameMap.get(network);
 		AlignmentI al;
 		SequenceI[] sq = new SequenceI[mapSequences.size()];
 		int i=0;
 		for (CyIdentifiable key: mapSequences.keySet()) {
-			System.out.println(key.getSUID()+": "+mapSequences.get(key));
-			sq[i++] = new jalview.datamodel.Sequence(""+key.getSUID(),mapSequences.get(key));
+			String name = nodeTable.getRow(key.getSUID()).get(CyNetwork.NAME, String.class);
+
+			System.out.println(name+": "+mapSequences.get(key));
+			sq[i++] = new jalview.datamodel.Sequence(name,mapSequences.get(key));
 			seqs.put(key, sq[i-1]); 
+			names.put(name, key);
 		}
 		al = new jalview.datamodel.Alignment(sq);
 		try {

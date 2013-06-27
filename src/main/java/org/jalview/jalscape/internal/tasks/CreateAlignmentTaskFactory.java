@@ -49,6 +49,9 @@ public class CreateAlignmentTaskFactory extends AbstractTaskFactory implements
 		// Get all of the selected nodes
 		List<CyIdentifiable> selectedList = new ArrayList<CyIdentifiable>();
 		selectedList.addAll(CyTableUtil.getNodesInState(net, CyNetwork.SELECTED, true));
+		if (selectedList.size() == 0) {
+			selectedList.addAll(net.getNodeList());
+		}
 		return new TaskIterator(new CreateAlignmentTask(selectedList, net, jalscapeManager));
 	}
 }
