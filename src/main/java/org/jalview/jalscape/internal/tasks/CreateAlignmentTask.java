@@ -30,7 +30,7 @@ public class CreateAlignmentTask extends AbstractTask {
 		taskMonitor.setStatusMessage("Opening jalview ...");
 
 		// open dialog
-		jalscapeManager.launchJalViewDialog(mapSequences);
+		jalscapeManager.launchJalViewDialog(net, mapSequences);
 	}
 
 }

@@ -4,28 +4,37 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.cytoscape.model.events.RowSetRecord;
-import org.cytoscape.model.events.RowsSetListener;
-import org.cytoscape.model.events.RowsSetEvent;
-
 import org.cytoscape.model.CyIdentifiable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
 
+import org.cytoscape.model.events.RowSetRecord;
+import org.cytoscape.model.events.RowsSetEvent;
+import org.cytoscape.model.events.RowsSetListener;
+
+import org.cytoscape.model.events.RowsCreatedEvent;
+import org.cytoscape.model.events.RowsCreatedListener;
+
 /**
  * This object maintains the selection state between JalView objects and Cytoscape objects.
  */
 
-public class SelectionListener implements RowsSetListener {
+public class CySelectionListener implements RowsSetListener {
 	private final JalScapeManager manager;
+	private boolean silenced = false;
 
-	public SelectionListener(JalScapeManager manager) {
+	public CySelectionListener(JalScapeManager manager) {
+		System.out.println("selection listener started");
 		this.manager = manager;
 	}
 
 	public void handleEvent(RowsSetEvent e) {
+		System.out.println("handing "+e);
 		CyTable source = e.getSource();
+
+		if (silenced)
+			return;
 
 		CyNetwork net = manager.getNetwork(source);
 		if (net == null)
@@ -48,8 +57,14 @@ public class SelectionListener implements RowsSetListener {
 		if (selectedRows.size() == 0) {
 			return;
 		}
+	}
 
-		// Now select the right sequences in JalView
+	public void silence() {
+		silenced = true;
+	}
+
+	public void unsilence() {
+		silenced = false;
 	}
 
 }

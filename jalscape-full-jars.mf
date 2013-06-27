@@ -17,9 +17,6 @@ Bundle-ManifestVersion: 2
 Bundle-Activator: org.jalview.jalscape.internal.CyActivator
 Embed-Dependency: jalview,jvlib.*;scope=compile|runtime;inline-false
 Bundle-SymbolicName: JalScape
-Import-Package: javax.xml.namespace,javax.xml.ws,javax.xml,javax.swing.plaf.basic,javax.net.ssl,javax.swing,javax.swing.event,javax.swing.filechooser,javax.swing.border,javax.swing.text,javax.swing.text.html,javax.swing.plaf,org.cytoscape.application.swing;version="[ 3.1,4)",org
- .cytoscape.model;version="[3.1,4)",org.cytoscape.service.util;version
- ="[3.1,4)",org.cytoscape.task;version="[3.1,4)",org.cytoscape.work;ve
- rsion="[3.1,4)",org.osgi.framework;version="[1.5,2)",org.slf4j;versio
- n="[1.5,2)"
+Import-Package: javax.xml.namespace,javax.xml.ws,javax.xml,javax.swing.plaf.basic,javax.net.ssl,javax.swing,javax.swing.event,javax.swing.filechooser,javax.swing.border,javax.swing.text,javax.swing.text.html,javax.swing.plaf,com.apple.mrj,
+org.cytoscape.application.swing;version="[ 3.1,4)",org.cytoscape.model;version="[3.1,4)",org.cytoscape.model.events;version="[3.1,4)",org.cytoscape.service.util;version ="[3.1,4)",org.cytoscape.task;version="[3.1,4)",org.cytoscape.work;version="[3.1,4)",org.osgi.framework;version="[1.5,2)",org.slf4j;version="[1.5,2)"
 

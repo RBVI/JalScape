@@ -12,6 +12,7 @@ import static org.cytoscape.work.ServiceProperties.TITLE;
 import java.util.Properties;
 
 import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.model.events.RowsSetListener;
 import org.cytoscape.service.util.AbstractCyActivator;
 import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.task.NetworkTaskFactory;
@@ -23,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.jalview.jalscape.internal.model.JalScapeManager;
+import org.jalview.jalscape.internal.model.CySelectionListener;
 import org.jalview.jalscape.internal.tasks.CreateAlignmentTaskFactory;
 
 
@@ -47,8 +49,18 @@ public class CyActivator extends AbstractCyActivator {
 			// Issue error and return
 		}
 
+		System.out.println("starting manager");
+
 		// Create the context object
 		JalScapeManager jalscapeManager = new JalScapeManager(bc, haveGUI);
+
+		System.out.println("registering listener");
+
+		// Create the selection listener
+		CySelectionListener selectionListener = new CySelectionListener(jalscapeManager);
+		registerService(bc, selectionListener, RowsSetListener.class, new Properties());
+
+		System.out.println("getting service registrar");
 
 		// Get a handle on the CyServiceRegistrar
 		CyServiceRegistrar registrar = getService(bc, CyServiceRegistrar.class);
@@ -64,7 +76,11 @@ public class CyActivator extends AbstractCyActivator {
 		createAlignmentProps.setProperty(IN_MENU_BAR, "true");
 		createAlignmentProps.setProperty(MENU_GRAVITY, "1.0");
 
+		System.out.println("registering menus");
+
 		registerService(bc, createAlignment, NetworkTaskFactory.class, createAlignmentProps);
+
+		System.out.println("initializing logger");
 		jalview.bin.Cache.initLogger();
 	}
 

@@ -1,19 +1,14 @@
 package org.jalview.jalscape.internal.model;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.IdentityHashMap;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
 
 import org.cytoscape.model.CyIdentifiable;
 import org.cytoscape.model.CyNetwork;
@@ -32,14 +27,17 @@ public class JalScapeManager {
 	static final String[] defaultSequenceKeys = { "Sequence", "sequence" };
 	private final BundleContext bundleContext;
 	private final boolean haveGUI;
-	java.util.Map<CyIdentifiable, SequenceI> seqs = new java.util.IdentityHashMap<CyIdentifiable, SequenceI>();
+	private Map<CyIdentifiable, SequenceI> seqs = new java.util.IdentityHashMap<CyIdentifiable, SequenceI>();
+	private Map<CyNetwork,Map<CyIdentifiable, SequenceI>> netMap;
+
 	public JalScapeManager(BundleContext bc, boolean haveGUI) {
 		this.bundleContext = bc;
 		this.haveGUI = haveGUI;
+		netMap = new HashMap<CyNetwork,Map<CyIdentifiable, SequenceI>>();
 	}
 
 	public Map<CyIdentifiable, String> getSequences(CyNetwork network, List<CyIdentifiable> nodeList) {
-		Map<CyIdentifiable, String> seqMap = new HashMap<CyIdentifiable, String>();
+		Map<CyIdentifiable, String> seqMap = new IdentityHashMap<CyIdentifiable, String>();
 		// TODO: Get the sequences
 		if (network == null) return null;
 
@@ -50,12 +48,15 @@ public class JalScapeManager {
 				seqMap.put(node, nodeTable.getRow(node.getSUID()).get(attr, String.class));
 			}
 		}
-		
+
 		return seqMap;
 	}
 
-	public void launchJalViewDialog(Map<CyIdentifiable, String> mapSequences) {
-		System.out.println("Launching jalview with: ");
+	public void launchJalViewDialog(CyNetwork network, Map<CyIdentifiable, String> mapSequences) {
+		if (!netMap.containsKey(network))
+			netMap.put(network, new IdentityHashMap<CyIdentifiable, SequenceI>());
+
+		Map<CyIdentifiable, SequenceI> seq = netMap.get(network);
 		AlignmentI al;
 		SequenceI[] sq = new SequenceI[mapSequences.size()];
 		int i=0;
@@ -79,6 +80,34 @@ public class JalScapeManager {
 		  
 //		    jalview.bin.Jalview.main(new String[] {});
 		} catch (Exception x) { x.printStackTrace();};
+	}
+
+	public boolean haveNetwork(CyNetwork net) {
+		if (netMap.keySet().contains(net))
+			return true;
+
+		return false;
+	}
+
+	public CyNetwork getNetwork(CyTable table) {
+		for (CyNetwork net: netMap.keySet()) {
+			if (net.getDefaultNodeTable().equals(table))
+				return net;
+		}
+		return null;
+	}
+
+	public boolean haveNode(CyNetwork net, CyIdentifiable id) {
+		if (netMap.keySet().contains(net) && netMap.get(net).keySet().contains(id))
+			return true;
+
+		return false;
+	}
+
+	public Map<CyIdentifiable, SequenceI> getSeqMap(CyNetwork network) {
+		if (netMap.containsKey(network))
+			return netMap.get(network);
+		return new HashMap<CyIdentifiable, SequenceI>();
 	}
 
 	private List<String> getCurrentSequenceKeys(CyNetwork network) {
