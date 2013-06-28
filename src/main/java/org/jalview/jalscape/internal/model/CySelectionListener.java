@@ -31,7 +31,7 @@ import org.cytoscape.model.events.RowsSetListener;
 
 public class CySelectionListener implements RowsSetListener, SelectionListener {
 	private final JalScapeManager manager;
-	private boolean silenced = false;
+	private volatile boolean silenced = false;
 
 	public CySelectionListener(JalScapeManager manager) {
 		System.out.println("selection listener started");

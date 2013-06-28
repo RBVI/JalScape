@@ -89,8 +89,8 @@ public class JalScapeManager implements SelectionSource {
       al = new jalview.datamodel.Alignment(sq);
       jalview.gui.AlignFrame af = new jalview.gui.AlignFrame(al, 600, 400);
       getCurrentDesktop().addInternalFrame(af, networkName, 600, 400);
-      (ssm=af.getViewport().getStructureSelectionManager())
-              .addSelectionListener(new CySelectionListener(this));
+      ssm = StructureSelectionManager.getStructureSelectionManager(getCurrentDesktop());
+      ssm.addSelectionListener(new CySelectionListener(this));
 
     } catch (Exception x)
     {
