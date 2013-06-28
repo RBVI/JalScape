@@ -1,0 +1,5 @@
+Jim - fix the registration of the initial selection listener for the alignframe
+Scooter - fix selection list from Cytoscape to Jalview
+Jim - fix web service loading so alignment is computed before Jalview is opened
+Scooter - work out how Jalview can be told to just open an existing alignment for a set of nodes if one is available
+Jim - get jalview to store alignment and any subsequent edits onto the network
