@@ -2,6 +2,7 @@ package org.jalview.jalscape.internal.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -112,6 +113,10 @@ public class JalScapeManager {
 		if (netMap.containsKey(table))
 			return netMap.get(table);
 		return null;
+	}
+
+	public Collection<CyIdentifiable> getAllIds() {
+		return seqToIdMap.values();
 	}
 
 	private List<String> getCurrentSequenceKeys(CyNetwork network) {

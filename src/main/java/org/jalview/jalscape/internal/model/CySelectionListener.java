@@ -171,4 +171,27 @@ public class CySelectionListener implements RowsSetListener, SelectionListener {
     cySelect(networks);
   }
 
+	private void cySelect(Map<CyNetwork, Set<CyIdentifiable>> networks) {
+		if (networks == null || networks.isEmpty())
+			return;
+
+		silence();
+		// Deselect all of our nodes	
+		Collection<CyIdentifiable> nodes = manager.getAllIds();
+		for (CyIdentifiable id: nodes) {
+			Set<CyNetwork> nets = manager.getNetworkForId(id);
+			for (CyNetwork net: nets) {
+				net.getRow(id).set(CyNetwork.SELECTED, false);
+			}
+		}
+
+		// Select the ones that were selected by jalview
+		for (CyNetwork network: networks.keySet()) {
+			for (CyIdentifiable node: networks.get(network)) {
+				network.getRow(node).set(CyNetwork.SELECTED, true);
+			}
+		}
+		unsilence();
+	}
+
 }
