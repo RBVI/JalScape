@@ -85,7 +85,7 @@ public class JalScapeManager {
 		  }
 		  jalview.gui.AlignFrame af = new jalview.gui.AlignFrame(al, 600, 400);
 		  jalview.gui.Desktop.addInternalFrame(af, "From Cytoscape",600,400);
-		  
+		  af.getViewport().getStructureSelectionManager().addSelectionListener(new CySelectionListener(this));
 		  
 //		    jalview.bin.Jalview.main(new String[] {});
 		} catch (Exception x) { x.printStackTrace();};
