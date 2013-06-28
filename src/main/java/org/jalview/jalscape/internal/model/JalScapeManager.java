@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.IdentityHashMap;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,14 +28,16 @@ public class JalScapeManager {
 	static final String[] defaultSequenceKeys = { "Sequence", "sequence" };
 	private final BundleContext bundleContext;
 	private final boolean haveGUI;
-	private Map<CyNetwork,Map<CyIdentifiable, SequenceI>> netMap;
-	private Map<CyNetwork,Map<String, CyIdentifiable>> nameMap;
+	private Map<CyIdentifiable, Set<CyNetwork>> idToNetMap;
+	private Map<SequenceI, CyIdentifiable> seqToIdMap;
+	private Map<CyTable, CyNetwork> netMap;
 
 	public JalScapeManager(BundleContext bc, boolean haveGUI) {
 		this.bundleContext = bc;
 		this.haveGUI = haveGUI;
-		netMap = new HashMap<CyNetwork,Map<CyIdentifiable, SequenceI>>();
-		nameMap = new HashMap<CyNetwork,Map<String, CyIdentifiable>>();
+		idToNetMap = new HashMap<CyIdentifiable, Set<CyNetwork>>();
+		seqToIdMap = new HashMap<SequenceI, CyIdentifiable>();
+		netMap = new HashMap<CyTable, CyNetwork>();
 	}
 
 	public Map<CyIdentifiable, String> getSequences(CyNetwork network, List<CyIdentifiable> nodeList) {
@@ -55,24 +58,26 @@ public class JalScapeManager {
 
 	public void launchJalViewDialog(CyNetwork network, Map<CyIdentifiable, String> mapSequences) {
 		CyTable nodeTable = network.getDefaultNodeTable();
+		String networkName = network.getRow(network).get(CyNetwork.NAME, String.class);
+		netMap.put(nodeTable, network);
 
-		if (!netMap.containsKey(network)) {
-			netMap.put(network, new IdentityHashMap<CyIdentifiable, SequenceI>());
-			nameMap.put(network, new IdentityHashMap<String, CyIdentifiable>());
-		}
-
-		Map<CyIdentifiable, SequenceI> seqs = netMap.get(network);
-		Map<String, CyIdentifiable> names = nameMap.get(network);
 		AlignmentI al;
 		SequenceI[] sq = new SequenceI[mapSequences.size()];
 		int i=0;
 		for (CyIdentifiable key: mapSequences.keySet()) {
 			String name = nodeTable.getRow(key.getSUID()).get(CyNetwork.NAME, String.class);
 
+
 			System.out.println(name+": "+mapSequences.get(key));
 			sq[i++] = new jalview.datamodel.Sequence(name,mapSequences.get(key));
-			seqs.put(key, sq[i-1]); 
-			names.put(name, key);
+
+			// Update all of our internal data structures
+			if (!idToNetMap.containsKey(key))
+				idToNetMap.put(key, new HashSet<CyNetwork>());
+			idToNetMap.get(key).add(network);
+			seqToIdMap.put(sq[i-1], key);
+
+			// Reverse map?
 		}
 		al = new jalview.datamodel.Alignment(sq);
 		try {
@@ -84,39 +89,29 @@ public class JalScapeManager {
 		    } catch (InterruptedException q) {};
 		  }
 		  jalview.gui.AlignFrame af = new jalview.gui.AlignFrame(al, 600, 400);
-		  jalview.gui.Desktop.addInternalFrame(af, "From Cytoscape",600,400);
+		  jalview.gui.Desktop.addInternalFrame(af, networkName,600,400);
 		  af.getViewport().getStructureSelectionManager().addSelectionListener(new CySelectionListener(this));
 		  
 //		    jalview.bin.Jalview.main(new String[] {});
 		} catch (Exception x) { x.printStackTrace();};
 	}
 
-	public boolean haveNetwork(CyNetwork net) {
-		if (netMap.keySet().contains(net))
-			return true;
-
-		return false;
-	}
-
-	public CyNetwork getNetwork(CyTable table) {
-		for (CyNetwork net: netMap.keySet()) {
-			if (net.getDefaultNodeTable().equals(table))
-				return net;
-		}
+	public CyIdentifiable getIdForSeq(SequenceI seq) {
+		if (seqToIdMap.containsKey(seq))
+			seqToIdMap.get(seq);
 		return null;
 	}
 
-	public boolean haveNode(CyNetwork net, CyIdentifiable id) {
-		if (netMap.keySet().contains(net) && netMap.get(net).keySet().contains(id))
-			return true;
-
-		return false;
+	public Set<CyNetwork> getNetworkForId(CyIdentifiable id) {
+		if (idToNetMap.containsKey(id))
+			return idToNetMap.get(id);
+		return null;
 	}
 
-	public Map<CyIdentifiable, SequenceI> getSeqMap(CyNetwork network) {
-		if (netMap.containsKey(network))
-			return netMap.get(network);
-		return new HashMap<CyIdentifiable, SequenceI>();
+	public CyNetwork getNetwork(CyTable table) {
+		if (netMap.containsKey(table))
+			return netMap.get(table);
+		return null;
 	}
 
 	private List<String> getCurrentSequenceKeys(CyNetwork network) {
