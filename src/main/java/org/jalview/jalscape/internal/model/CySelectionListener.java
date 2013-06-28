@@ -39,7 +39,6 @@ public class CySelectionListener implements RowsSetListener, SelectionListener {
 	}
 
 	public void handleEvent(RowsSetEvent e) {
-		// System.out.println("handing "+e);
 		CyTable source = e.getSource();
 
 		if (silenced)
@@ -57,18 +56,14 @@ public class CySelectionListener implements RowsSetListener, SelectionListener {
 		Collection<RowSetRecord> records = e.getColumnRecords(CyNetwork.SELECTED);
 		for (RowSetRecord record : records) {
 			CyRow row = record.getRow();
-			// This is a hack to avoid double selection...
-			if (row.toString().indexOf("FACADE") >= 0)
-				continue;
-			selectedRows.put(row.get(CyIdentifiable.SUID, Long.class),
-					(Boolean) record.getValue());
+			if (((Boolean)record.getValue()) == Boolean.TRUE)
+				selectedRows.put(row.get(CyIdentifiable.SUID, Long.class), Boolean.TRUE);
 		}
 		if (selectedRows.size() == 0) {
 			return;
 		}
-		for (Long suid: selectedRows.keySet()) {
-			SequenceI s = manager.getSeqForId(suid);
-		}
+		
+		selectSuidInJalview(selectedRows.keySet());
 	}
 
 	public void silence() {
@@ -78,18 +73,21 @@ public class CySelectionListener implements RowsSetListener, SelectionListener {
 	public void unsilence() {
 		silenced = false;
 	}
-	private void selectSuidInJalview(Collection<CyIdentifiable> toselect)
+	
+	private void selectSuidInJalview(Collection<Long> toselect)
 	{
+		System.out.println("Selecting "+toselect.size()+" sequences");
 	  SequenceGroup jselection;
 	  ColumnSelection csel;
 	  List<SequenceI> seqs = new ArrayList<SequenceI>();
 	  boolean aligned=false;
           int maxWidth = 0;
-	  for (CyIdentifiable cyId:toselect)
+	  for (Long cySuid:toselect)
 	  {
-	    SequenceI sq = manager.getSeqForId(cyId);
+	    SequenceI sq = manager.getSeqForId(cySuid);
 	    if (sq!=null)
 	    {
+	    	System.out.println("SUID = "+cySuid+" "+sq.getName());
 	      seqs.add(sq);
 	      if (sq.getDatasetSequence()!=null)
 	      {
@@ -108,7 +106,7 @@ public class CySelectionListener implements RowsSetListener, SelectionListener {
                 maxWidth = mw;
               };
               }
-            }
+       }
     manager.getStructureSelectionManager().sendSelection(jselection, null,
             manager);
 	}
