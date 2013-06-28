@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.osgi.framework.BundleContext;
-
 import org.cytoscape.model.CyIdentifiable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTable;
@@ -20,12 +19,14 @@ import org.cytoscape.model.CyTableUtil;
 import jalview.datamodel.AlignmentI;
 import jalview.datamodel.SequenceI;
 import jalview.datamodel.Sequence;
+import jalview.structure.SelectionSource;
+import jalview.structure.StructureSelectionManager;
 
 /**
  * This object maintains the relationship between JalView objects and Cytoscape objects.
  */
 
-public class JalScapeManager {
+public class JalScapeManager implements SelectionSource {
 	static final String[] defaultSequenceKeys = { "Sequence", "sequence" };
 	private final BundleContext bundleContext;
 	private final boolean haveGUI;
@@ -87,7 +88,7 @@ public class JalScapeManager {
       al = new jalview.datamodel.Alignment(sq);
       jalview.gui.AlignFrame af = new jalview.gui.AlignFrame(al, 600, 400);
       getCurrentDesktop().addInternalFrame(af, networkName, 600, 400);
-      af.getViewport().getStructureSelectionManager()
+      (ssm=af.getViewport().getStructureSelectionManager())
               .addSelectionListener(new CySelectionListener(this));
 
     } catch (Exception x)
@@ -96,6 +97,7 @@ public class JalScapeManager {
     }
     ;
 	}
+	StructureSelectionManager ssm;
 
   /**
    * start Jalview if necessary and get a reference to the desktop
@@ -180,4 +182,9 @@ public class JalScapeManager {
 		}
 		return columnsFound;
 	}
+
+  public StructureSelectionManager getStructureSelectionManager()
+  {
+   return ssm; 
+  }
 }

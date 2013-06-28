@@ -75,6 +75,40 @@ public class CySelectionListener implements RowsSetListener, SelectionListener {
 	public void unsilence() {
 		silenced = false;
 	}
+	private void selectSuidInJalview(Collection<CyIdentifiable> toselect)
+	{
+	  SequenceGroup jselection;
+	  ColumnSelection csel;
+	  List<SequenceI> seqs = new ArrayList<SequenceI>();
+	  boolean aligned=false;
+          int maxWidth = 0;
+	  for (CyIdentifiable cyId:toselect)
+	  {
+	    SequenceI sq = manager.getSeqForId(cyId);
+	    if (sq!=null)
+	    {
+	      seqs.add(sq);
+	      if (sq.getDatasetSequence()!=null)
+	      {
+	        aligned=true;
+	      }
+	    }
+	  }
+	  {
+              jselection = new SequenceGroup();
+              for (SequenceI seq:seqs)
+              {
+              jselection.addSequence(seq,
+                      false);
+              int mw = seq.getLength();
+              if (mw>maxWidth) {
+                maxWidth = mw;
+              };
+              }
+            }
+    manager.getStructureSelectionManager().sendSelection(jselection, null,
+            manager);
+	}
 	
 
   /*
