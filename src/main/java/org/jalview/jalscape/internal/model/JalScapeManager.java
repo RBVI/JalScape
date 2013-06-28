@@ -30,14 +30,16 @@ public class JalScapeManager {
 	private final BundleContext bundleContext;
 	private final boolean haveGUI;
 	private Map<CyIdentifiable, Set<CyNetwork>> idToNetMap;
-	private Map<SequenceI, CyIdentifiable> seqToIdMap;
+	private HashMap<String, CyIdentifiable> seqToIdMap;
+	private Map<CyIdentifiable, SequenceI> idMapToSeq;
 	private Map<CyTable, CyNetwork> netMap;
 
 	public JalScapeManager(BundleContext bc, boolean haveGUI) {
 		this.bundleContext = bc;
 		this.haveGUI = haveGUI;
 		idToNetMap = new HashMap<CyIdentifiable, Set<CyNetwork>>();
-		seqToIdMap = new HashMap<SequenceI, CyIdentifiable>();
+		seqToIdMap = new HashMap<String, CyIdentifiable>();
+		idMapToSeq = new HashMap<CyIdentifiable, SequenceI>();
 		netMap = new HashMap<CyTable, CyNetwork>();
 	}
 
@@ -68,40 +70,86 @@ public class JalScapeManager {
 		for (CyIdentifiable key: mapSequences.keySet()) {
 			String name = nodeTable.getRow(key.getSUID()).get(CyNetwork.NAME, String.class);
 
-
-			System.out.println(name+": "+mapSequences.get(key));
-			sq[i++] = new jalview.datamodel.Sequence(name,mapSequences.get(key));
-
+			SequenceI seq=new jalview.datamodel.Sequence(name,mapSequences.get(key));
+			seq.setDatasetSequence(seq.createDatasetSequence());
+			seq.getDatasetSequence().setVamsasId(key.toString());
+			sq[i++] = seq;
+			
 			// Update all of our internal data structures
 			if (!idToNetMap.containsKey(key))
 				idToNetMap.put(key, new HashSet<CyNetwork>());
 			idToNetMap.get(key).add(network);
-			seqToIdMap.put(sq[i-1], key);
-
-			// Reverse map?
+			setIdForSeq(key, seq);
+			setIdForSeq(key, seq.getDatasetSequence());
 		}
-		al = new jalview.datamodel.Alignment(sq);
-		try {
-		  jalview.bin.Jalview.main(new String[] {});
-		  while (jalview.gui.Desktop.instance==null || !jalview.gui.Desktop.instance.isVisible())
-		  {
-		    try {
-		      Thread.sleep(500);
-		    } catch (InterruptedException q) {};
-		  }
-		  jalview.gui.AlignFrame af = new jalview.gui.AlignFrame(al, 600, 400);
-		  jalview.gui.Desktop.addInternalFrame(af, networkName,600,400);
-		  af.getViewport().getStructureSelectionManager().addSelectionListener(new CySelectionListener(this));
-		  
-//		    jalview.bin.Jalview.main(new String[] {});
-		} catch (Exception x) { x.printStackTrace();};
+    try
+    {
+      al = new jalview.datamodel.Alignment(sq);
+      jalview.gui.AlignFrame af = new jalview.gui.AlignFrame(al, 600, 400);
+      getCurrentDesktop().addInternalFrame(af, networkName, 600, 400);
+      af.getViewport().getStructureSelectionManager()
+              .addSelectionListener(new CySelectionListener(this));
+
+    } catch (Exception x)
+    {
+      x.printStackTrace();
+    }
+    ;
 	}
 
-	public CyIdentifiable getIdForSeq(SequenceI seq) {
-		if (seqToIdMap.containsKey(seq))
-			seqToIdMap.get(seq);
-		return null;
-	}
+  /**
+   * start Jalview if necessary and get a reference to the desktop
+   * 
+   * @return
+   */
+  private jalview.gui.Desktop getCurrentDesktop()
+  {
+
+    if (jalview.gui.Desktop.instance == null)
+    {
+      jalview.bin.Jalview.main(new String[]
+      {});
+
+      while (jalview.gui.Desktop.instance == null
+              || !jalview.gui.Desktop.instance.isVisible())
+      {
+        try
+        {
+          Thread.sleep(500);
+        } catch (InterruptedException q)
+        {
+        }
+        ;
+      }
+    }
+    return jalview.gui.Desktop.instance;
+
+  }
+  public SequenceI getSeqForId(CyIdentifiable id)
+  {
+    return (idMapToSeq.get(id));
+  }
+//  public SequenceI bindDatasetSeqForId(CyIdentifiable id, SequenceI sq)
+//  {
+//    
+//  }
+
+  private void setIdForSeq(CyIdentifiable key, SequenceI seq)
+  {
+    String _key = "foo" + ((Object) seq);
+    seqToIdMap.put(_key, key);
+  }
+
+  public CyIdentifiable getIdForSeq(SequenceI seq)
+  {
+    String key = "foo" + ((Object) seq);
+    if (seqToIdMap.containsKey(key))
+    {
+      return seqToIdMap.get(key);
+    }
+
+    return null;
+  }
 
 	public Set<CyNetwork> getNetworkForId(CyIdentifiable id) {
 		if (idToNetMap.containsKey(id))

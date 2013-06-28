@@ -87,6 +87,9 @@ public class CySelectionListener implements RowsSetListener, SelectionListener {
   public void selection(SequenceGroup arg0, ColumnSelection arg1,
           SelectionSource arg2)
   {
+    // need a logger for this
+    System.out.println("Selecting from Jalview: "+((arg0!=null && arg0.getSequences()!=null) ? arg0.getSequences().size()+" sequences" : "No sequences")+" from "+arg2.getClass().getName());
+    System.out.println("Manager knows about :"+manager.getAllIds().size()+" CyIds.");
     Map<CyNetwork, Set<CyIdentifiable>> networks = new HashMap<CyNetwork, Set<CyIdentifiable>>();
     if (arg2 != manager)
     {
@@ -101,19 +104,37 @@ public class CySelectionListener implements RowsSetListener, SelectionListener {
                       .getSelected().size() == 0))
       {
         // clear selection;
+        // need to add bound network for this alignment to list
+        
       }
       else
       {
-        List<CyIdentifiable> cyids = new ArrayList<CyIdentifiable>();
+        //  
         for (SequenceI sq : arg0.getSequences())
         {
           SequenceI ds = sq;
-          while (ds.getDatasetSequence() != null)
+          System.out.println("Dataset sequence: "+ds);
+          List<CyIdentifiable> ids = new ArrayList<CyIdentifiable>();
           {
-            ds = ds.getDatasetSequence();
+            CyIdentifiable cyid = manager.getIdForSeq(ds);
+            if (cyid != null)
+            {
+              System.out.println("sequence: "+ds+" has ID "+cyid);
+              ids.add(cyid);
+            }
+            while (ds.getDatasetSequence() != null)
+            {
+              ds = ds.getDatasetSequence();
+              cyid = manager.getIdForSeq(ds);
+              if (cyid != null)
+              {
+                System.out.println("Dataset sequence: "+ds+" has ID "+cyid);
+                ids.add(cyid);
+              }
+            }
           }
-          CyIdentifiable cyid = manager.getIdForSeq(ds);
-          if (cyid != null)
+          for (CyIdentifiable cyid : ids)
+
           {
             Set<CyNetwork> network = manager.getNetworkForId(cyid);
             if (network != null)
@@ -167,8 +188,9 @@ public class CySelectionListener implements RowsSetListener, SelectionListener {
           // selection
         }
       }
+      System.out.println("Resolved "+networks.size()+" networks for selection.");
+      cySelect(networks);
     }
-    cySelect(networks);
   }
 
 	private void cySelect(Map<CyNetwork, Set<CyIdentifiable>> networks) {
