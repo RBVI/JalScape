@@ -31,7 +31,7 @@ public class JalScapeManager {
 	private final boolean haveGUI;
 	private Map<CyIdentifiable, Set<CyNetwork>> idToNetMap;
 	private HashMap<String, CyIdentifiable> seqToIdMap;
-	private Map<CyIdentifiable, SequenceI> idMapToSeq;
+	private Map<Long, SequenceI> idMapToSeq;
 	private Map<CyTable, CyNetwork> netMap;
 
 	public JalScapeManager(BundleContext bc, boolean haveGUI) {
@@ -39,7 +39,7 @@ public class JalScapeManager {
 		this.haveGUI = haveGUI;
 		idToNetMap = new HashMap<CyIdentifiable, Set<CyNetwork>>();
 		seqToIdMap = new HashMap<String, CyIdentifiable>();
-		idMapToSeq = new HashMap<CyIdentifiable, SequenceI>();
+		idMapToSeq = new HashMap<Long, SequenceI>();
 		netMap = new HashMap<CyTable, CyNetwork>();
 	}
 
@@ -81,6 +81,7 @@ public class JalScapeManager {
 			idToNetMap.get(key).add(network);
 			setIdForSeq(key, seq);
 			setIdForSeq(key, seq.getDatasetSequence());
+			idMapToSeq.put(key.getSUID(), seq);
 		}
     try
     {
@@ -125,14 +126,10 @@ public class JalScapeManager {
     return jalview.gui.Desktop.instance;
 
   }
-  public SequenceI getSeqForId(CyIdentifiable id)
+  public SequenceI getSeqForId(Long id)
   {
     return (idMapToSeq.get(id));
   }
-//  public SequenceI bindDatasetSeqForId(CyIdentifiable id, SequenceI sq)
-//  {
-//    
-//  }
 
   private void setIdForSeq(CyIdentifiable key, SequenceI seq)
   {

@@ -39,7 +39,7 @@ public class CySelectionListener implements RowsSetListener, SelectionListener {
 	}
 
 	public void handleEvent(RowsSetEvent e) {
-		System.out.println("handing "+e);
+		// System.out.println("handing "+e);
 		CyTable source = e.getSource();
 
 		if (silenced)
@@ -65,6 +65,9 @@ public class CySelectionListener implements RowsSetListener, SelectionListener {
 		}
 		if (selectedRows.size() == 0) {
 			return;
+		}
+		for (Long suid: selectedRows.keySet()) {
+			SequenceI s = manager.getSeqForId(suid);
 		}
 	}
 
