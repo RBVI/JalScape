@@ -19,8 +19,10 @@ import java.util.Set;
 
 import org.cytoscape.model.CyIdentifiable;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.model.events.RowSetRecord;
 import org.cytoscape.model.events.RowsSetEvent;
 import org.cytoscape.model.events.RowsSetListener;
@@ -52,18 +54,9 @@ public class CySelectionListener implements RowsSetListener, SelectionListener {
 			return;
 		}
 
-		Map<Long, Boolean> selectedRows = new HashMap<Long, Boolean>();
-		Collection<RowSetRecord> records = e.getColumnRecords(CyNetwork.SELECTED);
-		for (RowSetRecord record : records) {
-			CyRow row = record.getRow();
-			if (((Boolean)record.getValue()) == Boolean.TRUE)
-				selectedRows.put(row.get(CyIdentifiable.SUID, Long.class), Boolean.TRUE);
-		}
-		if (selectedRows.size() == 0) {
-			return;
-		}
-		
-		selectSuidInJalview(selectedRows.keySet());
+		List<CyNode> nodeList = CyTableUtil.getNodesInState(net, CyNetwork.SELECTED, true);
+
+		selectSuidInJalview(nodeList);
 	}
 
 	public void silence() {
@@ -74,7 +67,7 @@ public class CySelectionListener implements RowsSetListener, SelectionListener {
 		silenced = false;
 	}
 	
-	private void selectSuidInJalview(Collection<Long> toselect)
+	private void selectSuidInJalview(List<CyNode> toselect)
 	{
 		System.out.println("Selecting "+toselect.size()+" sequences");
 	  SequenceGroup jselection;
@@ -82,8 +75,9 @@ public class CySelectionListener implements RowsSetListener, SelectionListener {
 	  List<SequenceI> seqs = new ArrayList<SequenceI>();
 	  boolean aligned=false;
           int maxWidth = 0;
-	  for (Long cySuid:toselect)
+	  for (CyNode node:toselect)
 	  {
+			Long cySuid = node.getSUID();
 	    SequenceI sq = manager.getSeqForId(cySuid);
 	    if (sq!=null)
 	    {
