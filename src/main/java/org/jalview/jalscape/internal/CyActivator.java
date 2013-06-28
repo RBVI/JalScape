@@ -82,6 +82,7 @@ public class CyActivator extends AbstractCyActivator {
 
 		System.out.println("initializing logger");
 		jalview.bin.Cache.initLogger();
+		jalview.bin.Cache.setPlugin(true);
 	}
 
 }
