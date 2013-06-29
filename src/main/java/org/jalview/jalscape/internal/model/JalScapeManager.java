@@ -90,11 +90,13 @@ public class JalScapeManager implements SelectionSource {
 		}
     try
     {
+      ssm = StructureSelectionManager.getStructureSelectionManager(getCurrentDesktop().instance);
+      ssm.addSelectionListener(new CySelectionListener(this));
+
       al = new jalview.datamodel.Alignment(sq);
+      al.setDataset(null); // this automatically creates a dataset for the new alignment
       jalview.gui.AlignFrame af = new jalview.gui.AlignFrame(al, 600, 400);
       getCurrentDesktop().addInternalFrame(af, networkName, 600, 400);
-      ssm = StructureSelectionManager.getStructureSelectionManager(getCurrentDesktop());
-      ssm.addSelectionListener(new CySelectionListener(this));
 
     } catch (Exception x)
     {
