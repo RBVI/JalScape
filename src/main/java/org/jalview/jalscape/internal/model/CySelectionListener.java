@@ -105,7 +105,18 @@ public class CySelectionListener implements RowsSetListener, SelectionListener {
               };
               }
        }
-    manager.getStructureSelectionManager().sendSelection(jselection, null,
+	  csel = new ColumnSelection();
+	  if (maxWidth>0)
+	  {
+	    jselection.setStartRes(0);
+	    jselection.setEndRes(maxWidth);
+	    
+	    for (int i = 0; i<maxWidth;i++)
+	    {
+	      csel.addElement(i);
+	    }
+	  }
+    manager.getStructureSelectionManager().sendSelection(jselection, csel,
             manager);
 	}
 	
