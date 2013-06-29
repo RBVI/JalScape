@@ -12,12 +12,14 @@ import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.task.NetworkTaskFactory;
 import org.cytoscape.work.AbstractTaskFactory;
 import org.cytoscape.work.TaskIterator;
-
 import org.jalview.jalscape.internal.model.JalScapeManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CreateAlignmentTaskFactory extends AbstractTaskFactory implements
 		NetworkTaskFactory {
-
+  private static Logger logger = LoggerFactory
+          .getLogger(CreateAlignmentTaskFactory.class);
 	private JalScapeManager jalscapeManager;
 
 	public CreateAlignmentTaskFactory(JalScapeManager jalscapeManager) {

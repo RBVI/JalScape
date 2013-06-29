@@ -39,7 +39,7 @@ public class CyActivator extends AbstractCyActivator {
 	}
 
 	public void start(BundleContext bc) {
-
+	  logger.info("Starting JalScape");
 		// See if we have a graphics console or not
 		boolean haveGUI = true;
 		ServiceReference ref = bc.getServiceReference(CySwingApplication.class.getName());
@@ -48,19 +48,18 @@ public class CyActivator extends AbstractCyActivator {
 			haveGUI = false;
 			// Issue error and return
 		}
-
-		System.out.println("starting manager");
+		logger.trace("starting manager");
 
 		// Create the context object
 		JalScapeManager jalscapeManager = new JalScapeManager(bc, haveGUI);
 
-		System.out.println("registering listener");
+		logger.trace("registering listener");
 
 		// Create the selection listener
 		CySelectionListener selectionListener = new CySelectionListener(jalscapeManager);
 		registerService(bc, selectionListener, RowsSetListener.class, new Properties());
 
-		System.out.println("getting service registrar");
+		logger.trace("getting service registrar");
 
 		// Get a handle on the CyServiceRegistrar
 		CyServiceRegistrar registrar = getService(bc, CyServiceRegistrar.class);
@@ -76,11 +75,11 @@ public class CyActivator extends AbstractCyActivator {
 		createAlignmentProps.setProperty(IN_MENU_BAR, "true");
 		createAlignmentProps.setProperty(MENU_GRAVITY, "1.0");
 
-		System.out.println("registering menus");
+		logger.trace("registering menus");
 
 		registerService(bc, createAlignment, NetworkTaskFactory.class, createAlignmentProps);
 
-		System.out.println("initializing logger");
+		logger.trace("initializing logger");
 		jalview.bin.Cache.initLogger();
 		jalview.bin.Cache.setPlugin(true);
 	}

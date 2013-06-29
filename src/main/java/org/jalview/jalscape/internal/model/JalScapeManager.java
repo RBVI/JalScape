@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.cytoscape.model.CyIdentifiable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTable;
@@ -27,6 +29,8 @@ import jalview.structure.StructureSelectionManager;
  */
 
 public class JalScapeManager implements SelectionSource {
+  private static Logger logger = LoggerFactory
+          .getLogger(JalScapeManager.class);
 	static final String[] defaultSequenceKeys = { "Sequence", "sequence" };
 	private final BundleContext bundleContext;
 	private final boolean haveGUI;
@@ -94,7 +98,8 @@ public class JalScapeManager implements SelectionSource {
 
     } catch (Exception x)
     {
-      x.printStackTrace();
+      logger.error("Couldn't launch Jalview.",x);
+      throw new Error("Jalview couldn't be launched.",x);
     }
     ;
 	}

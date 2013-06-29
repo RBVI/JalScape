@@ -26,17 +26,21 @@ import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.model.events.RowSetRecord;
 import org.cytoscape.model.events.RowsSetEvent;
 import org.cytoscape.model.events.RowsSetListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This object maintains the selection state between JalView objects and Cytoscape objects.
  */
 
 public class CySelectionListener implements RowsSetListener, SelectionListener {
+  private static Logger logger = LoggerFactory
+          .getLogger(CySelectionListener.class);
 	private final JalScapeManager manager;
 	private volatile boolean silenced = false;
 
 	public CySelectionListener(JalScapeManager manager) {
-		System.out.println("selection listener started");
+	  logger.trace("selection listener started");
 		this.manager = manager;
 	}
 
@@ -69,7 +73,7 @@ public class CySelectionListener implements RowsSetListener, SelectionListener {
 	
 	private void selectSuidInJalview(List<CyNode> toselect)
 	{
-		System.out.println("Selecting "+toselect.size()+" sequences");
+	  logger.trace("Selecting "+toselect.size()+" sequences");
 	  SequenceGroup jselection;
 	  ColumnSelection csel;
 	  List<SequenceI> seqs = new ArrayList<SequenceI>();
@@ -81,7 +85,7 @@ public class CySelectionListener implements RowsSetListener, SelectionListener {
 	    SequenceI sq = manager.getSeqForId(cySuid);
 	    if (sq!=null)
 	    {
-	    	System.out.println("SUID = "+cySuid+" "+sq.getName());
+	      logger.trace("SUID = "+cySuid+" "+sq.getName());
 	      seqs.add(sq);
 	      if (sq.getDatasetSequence()!=null)
 	      {
@@ -117,8 +121,11 @@ public class CySelectionListener implements RowsSetListener, SelectionListener {
           SelectionSource arg2)
   {
     // need a logger for this
-    System.out.println("Selecting from Jalview: "+((arg0!=null && arg0.getSequences()!=null) ? arg0.getSequences().size()+" sequences" : "No sequences")+" from "+arg2.getClass().getName());
-    System.out.println("Manager knows about :"+manager.getAllIds().size()+" CyIds.");
+    if (logger.isTraceEnabled())
+    {
+      logger.trace("Selecting from Jalview: "+((arg0!=null && arg0.getSequences()!=null) ? arg0.getSequences().size()+" sequences" : "No sequences")+" from "+arg2.getClass().getName());
+      logger.trace("Manager knows about :"+manager.getAllIds().size()+" CyIds.");
+    }
     Map<CyNetwork, Set<CyIdentifiable>> networks = new HashMap<CyNetwork, Set<CyIdentifiable>>();
     if (arg2 != manager)
     {
@@ -142,13 +149,12 @@ public class CySelectionListener implements RowsSetListener, SelectionListener {
         for (SequenceI sq : arg0.getSequences())
         {
           SequenceI ds = sq;
-          System.out.println("Dataset sequence: "+ds);
           List<CyIdentifiable> ids = new ArrayList<CyIdentifiable>();
           {
             CyIdentifiable cyid = manager.getIdForSeq(ds);
             if (cyid != null)
             {
-              System.out.println("sequence: "+ds+" has ID "+cyid);
+              if (logger.isTraceEnabled()) {logger.trace((ds.getDatasetSequence()!=null ? "Dataset" : "Alignment")+" sequence: "+ds+" has ID "+cyid); }
               ids.add(cyid);
             }
             while (ds.getDatasetSequence() != null)
@@ -157,13 +163,12 @@ public class CySelectionListener implements RowsSetListener, SelectionListener {
               cyid = manager.getIdForSeq(ds);
               if (cyid != null)
               {
-                System.out.println("Dataset sequence: "+ds+" has ID "+cyid);
+                if (logger.isTraceEnabled()) {logger.trace("Dataset sequence: "+ds+" has ID "+cyid);}
                 ids.add(cyid);
               }
             }
           }
           for (CyIdentifiable cyid : ids)
-
           {
             Set<CyNetwork> network = manager.getNetworkForId(cyid);
             if (network != null)
@@ -217,7 +222,7 @@ public class CySelectionListener implements RowsSetListener, SelectionListener {
           // selection
         }
       }
-      System.out.println("Resolved "+networks.size()+" networks for selection.");
+      logger.trace("Resolved "+networks.size()+" networks for selection.");
       cySelect(networks);
     }
   }

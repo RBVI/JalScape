@@ -9,10 +9,13 @@ import org.cytoscape.model.CyIdentifiable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
-
 import org.jalview.jalscape.internal.model.JalScapeManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CreateAlignmentTask extends AbstractTask {
+  private static Logger logger = LoggerFactory
+          .getLogger(CreateAlignmentTask.class);
 	// private List<CyNode> nodeList;
 	private CyNetwork net;
 	private JalScapeManager jalscapeManager;
